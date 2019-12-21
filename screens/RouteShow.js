@@ -24,6 +24,11 @@ export default class RouteShow extends Component {
     this.setState({ coordList })
   }
 
+  handlePress = (index) => {
+    let coords = this.state.coordList[index]
+    console.log(coords)
+  }
+
   render() {
     return (
       <View>
@@ -39,7 +44,7 @@ export default class RouteShow extends Component {
             let lastDate = new Date(lastDateString)
 
             return (
-              <TouchableOpacity onPress={() => null}>
+              <TouchableOpacity onPress={() => this.handlePress(data.index)}>
                 <Text>{Util.formatDate(firstDate)}-{Util.formatDate(lastDate)}</Text>
               </TouchableOpacity>
             );
