@@ -17,4 +17,5 @@ export default class Util {
         }
     }
 
+    static formatDate = (date) => `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
 }

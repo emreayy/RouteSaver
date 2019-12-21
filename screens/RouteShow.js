@@ -6,7 +6,7 @@ export default class RouteShow extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      coordList: [ ]
+      coordList: []
     }
   }
 
@@ -29,20 +29,21 @@ export default class RouteShow extends Component {
       <View>
         <FlatList
           data={this.state.coordList}
-            renderItem={(data) => {
-              let arr = data.item
-              let lastIndex = arr.length - 1
-              let firstDate = arr[0].date
-              let lastDate = arr[lastIndex].date
+          renderItem={(data) => {
+            let arr = data.item
+            let lastIndex = arr.length - 1
+            let firstDateString = arr[0].date
+            let lastDateString = arr[lastIndex].date
 
-              return (
-                <TouchableOpacity onPress={() => null}>
+            let firstDate = new Date(firstDateString)
+            let lastDate = new Date(lastDateString)
 
-                <Text>{firstDate + " - "+ lastDate}</Text>
-
-                </TouchableOpacity>
-              );
-            }
+            return (
+              <TouchableOpacity onPress={() => null}>
+                <Text>{Util.formatDate(firstDate)}-{Util.formatDate(lastDate)}</Text>
+              </TouchableOpacity>
+            );
+          }
           }
 
           keyExtractor={(item, index) => index.toString()}

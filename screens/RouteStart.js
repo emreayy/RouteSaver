@@ -35,7 +35,7 @@ export default class RouteStart extends Component {
     this.setState({ isStarted: false })
     clearInterval(this.intervalId)
 
-    const last3 = this.state.list.slice(-3)
+    let last3 = this.state.list.filter(el => el.length > 0).slice(-3)
     let coordListString = JSON.stringify(last3)
     Util.storeData("coordList", coordListString)
   }
