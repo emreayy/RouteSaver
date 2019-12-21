@@ -7,12 +7,26 @@ export default class RouteStart extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      seconds: 0,
       isStarted: false,
       list: []
     }
 
     this.intervalId = -1
+    this.fillHistory()
+  }
 
+  fillHistory = async () => {
+    let coordListData = await Util.retrieveData("coordList")
+    let coordList = JSON.parse(coordListData)
+    coordList = coordList.map(eleman => {
+      return eleman.map(el => {
+        el.date = new Date(el.date)
+        return el
+      })
+    })
+
+    this.setState({ list: coordList })
   }
 
   handleStart = () => {
@@ -26,6 +40,8 @@ export default class RouteStart extends Component {
         list
       }
     })
+    this.setState({seconds:0})
+    this.tick()
     this.intervalId = setInterval(this.getLocation, freq)
   }
 
@@ -34,6 +50,7 @@ export default class RouteStart extends Component {
 
     this.setState({ isStarted: false })
     clearInterval(this.intervalId)
+    clearInterval(this.intervalSecondId)
 
     let last3 = this.state.list.filter(el => el.length > 0).slice(-3)
     let coordListString = JSON.stringify(last3)
@@ -64,13 +81,23 @@ export default class RouteStart extends Component {
     )
   }
 
+  tick = () => {
+    this.intervalSecondId = setInterval(() => {
+      this.setState(prevState => ({
+        seconds: prevState.seconds + 1
+      }));
+    }, 1000);
+  }
+
   render() {
     return (
       <View style={styles.container}>
+        <Text>Adet sayisi:{this.state.list.length}</Text>
+        <Text style={{textAlign:"right"}}>Süre:{this.state.seconds}</Text>
         <View style={{margin:10}}><Button title="Start"  color="#03AC13" onPress={this.handleStart} /></View>
         <View style={{margin:10}}><Button title="Stop" color="#FF0000" onPress={this.handleStop} /></View>
-        <Text>Adet sayisi:{this.state.list.length}</Text>
-        {
+        
+        {/*
           this.state.list.map((eleman, key) => {
 
             if (eleman.length <= 0) return <Text key={key}>Boş eleman</Text>;
@@ -80,7 +107,7 @@ export default class RouteStart extends Component {
             })
 
 
-          })
+          })*/
         }
       </View>
     );
