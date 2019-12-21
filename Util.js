@@ -18,4 +18,6 @@ export default class Util {
     }
 
     static formatDate = (date) => `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
+        
+    static formatFullDate = (date) => `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()} ${date.getDay()}.${date.getMonth()}.${date.getFullYear()}`
 }

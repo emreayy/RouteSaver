@@ -1,46 +1,26 @@
 import React, { Component } from 'react'
 import { StyleSheet, View, Text, FlatList, TouchableOpacity } from 'react-native'
 import Util from '../Util'
-import MapView, { Marker } from 'react-native-maps'
+import MapView, { Marker, MarkerAnimated } from 'react-native-maps'
 import { SafeAreaView } from 'react-navigation'
 
 export default class RouteShow extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      region: {
-        latitude: 37.78825,
-        longitude: -122.4324,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
-      },
-      markers: [
-        {
-          latlng: {
-            latitude: 37.78825,
-            longitude: -122.4324,
-          },
-          title: 'Evim',
-          description: 'Açıklama'
-        },
-        {
-          latlng: {
-            latitude: 37.78925,
-            longitude: -122.4324,
-          },
-          title: 'Evim2',
-          description: 'Açıklama2'
-        },
-        {
-          latlng: {
-            latitude: 37.79025,
-            longitude: -122.4324,
-          },
-          title: 'Evim3',
-          description: 'Açıklama3'
-        },
-      ],
+      markers: [],
       coordList: []
+    }
+    this.setRegion()
+  }
+
+  setRegion = async () => {
+    let { coords } = await this.getCurrentPosition()
+    this.region = {
+      latitude: coords.latitude,
+      longitude: coords.longitude,
+      latitudeDelta: 0.0922,
+      longitudeDelta: 0.0421,
     }
   }
 
@@ -50,15 +30,8 @@ export default class RouteShow extends Component {
       alert('Konum izni verilmedi.')
       return false;
     }
-    const { coords } = await this.getCurrentPosition();
-    this.setState({
-      region: {
-        ...this.state.region,
-        latitude: coords.latitude,
-        longitude: coords.longitude
-      },
-    });
   }
+  
   getCurrentPosition() {
     return new Promise((resolve, reject) => {
       navigator.geolocation.getCurrentPosition(position => {
@@ -88,30 +61,30 @@ export default class RouteShow extends Component {
 
   handlePress = (index) => {
     let coords = this.state.coordList[index]
-    console.log(coords)
+    this.setState({ markers: coords })
   }
 
   render() {
     return (
       <SafeAreaView style={styles.container}>
 
-        <MapView style={styles.map}
-          region={this.state.region}
+        <MapView zoomControlEnabled style={styles.map}
+          initialRegion={this.region}
           loadingEnabled={true}
           showsUserLocation={true}
         >{
             this.state.markers.map((marker, key) => (
               <Marker
                 key={key}
-                coordinate={marker.latlng}
-                title={marker.title}
-                description={marker.description}
+                coordinate={{ latitude: marker.latitude, longitude: marker.longitude }}
+                title={Util.formatDate(new Date(marker.date))}
+                description={Util.formatFullDate(new Date(marker.date))}
               />
             ))
           }
         </MapView>
 
-        <FlatList style={{paddingTop:5}}
+        <FlatList style={{ paddingTop: 5 }}
           data={this.state.coordList}
           renderItem={(data) => {
             let arr = data.item
@@ -124,19 +97,14 @@ export default class RouteShow extends Component {
 
             return (
               <TouchableOpacity onPress={() => this.handlePress(data.index)}>
-                <Text style={styles.text}>{Util.formatDate(firstDate)}-{Util.formatDate(lastDate)} 
-                  <Text style={{}}> > </Text></Text> 
+                <Text style={styles.text}>{Util.formatDate(firstDate)}-{Util.formatDate(lastDate)}
+                  <Text style={{}}> > </Text></Text>
               </TouchableOpacity>
             );
           }
           }
-
           keyExtractor={(item, index) => index.toString()}
         />
-
-
-
-
       </SafeAreaView>
     )
   }
@@ -152,7 +120,7 @@ const styles = StyleSheet.create({
   },
   map: {
     flex: 9,
-    
+
   },
   text: {
     fontSize: 24,
