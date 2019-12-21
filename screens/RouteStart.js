@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { View, Text, Button, Alert } from 'react-native';
+import {StyleSheet, View, Text, Button, Alert} from 'react-native';
+import Util from '../Util'
 
 const freq = 3000
-export default class HomeScreen extends Component {
+export default class RouteStart extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -17,7 +18,7 @@ export default class HomeScreen extends Component {
   handleStart = () => {
     if (this.state.isStarted) return;
 
-    this.setState({isStarted: true})
+    this.setState({ isStarted: true })
     this.setState(prevState => {
       let list = prevState.list
       list.push([])
@@ -28,30 +29,31 @@ export default class HomeScreen extends Component {
     this.intervalId = setInterval(this.getLocation, freq)
   }
 
-  handleStop = () => {
+  handleStop = async () => {
     if (!this.state.isStarted) return;
 
-    this.setState({isStarted: false})
+    this.setState({ isStarted: false })
     clearInterval(this.intervalId)
+
+    const last3 = this.state.list.slice(-3)
+    let coordListString = JSON.stringify(last3)
+    Util.storeData("coordList", coordListString)
   }
 
   getLocation = () => {
-    let random = Math.random() * 10000
-    //Alert.alert("Selamlar" + random)
-
     this.findCoordinates()
   }
 
   findCoordinates = () => {
     navigator.geolocation.getCurrentPosition(
       position => {
-        const {latitude, longitude} = position.coords
+        const { latitude, longitude } = position.coords
         const lastIndex = this.state.list.length - 1
         let date = new Date()
 
         this.setState(prevState => {
           let list = prevState.list
-          list[lastIndex].push({latitude, longitude, date})
+          list[lastIndex].push({ latitude, longitude, date })
           return {
             list
           }
@@ -64,23 +66,35 @@ export default class HomeScreen extends Component {
 
   render() {
     return (
-      <View>
-      <Button title="Start" onPress={this.handleStart}/>
-      <Button title="Stop" onPress={this.handleStop}/>
-      <Text>Adet sayisi:{this.state.list.length && this.state.list[0].length}</Text>
-      {
-        this.state.list.map((eleman, key) => {
-            
-          if (eleman.length <= 0) return <Text key={key}>Boş eleman</Text>;
+      <View style={styles.container}>
+        <View style={{margin:10}}><Button title="Start"  color="#03AC13" onPress={this.handleStart} /></View>
+        <View style={{margin:10}}><Button title="Stop" color="#FF0000" onPress={this.handleStop} /></View>
+        <Text>Adet sayisi:{this.state.list.length}</Text>
+        {
+          this.state.list.map((eleman, key) => {
 
-          return eleman.map((el, key) => {
-            return <Text key={key}>{el.latitude + " - " + el.longitude + " - " + el.date.getSeconds()}</Text>
+            if (eleman.length <= 0) return <Text key={key}>Boş eleman</Text>;
+
+            return eleman.map((el, key) => {
+              return <Text key={key}>{el.latitude + " - " + el.longitude + " - " + el.date.getSeconds()}</Text>
+            })
+
+
           })
-
-          
-        })
-      }
+        }
       </View>
     );
   }
 }
+
+RouteStart.navigationOptions = {
+  title: 'Rota Başlat',
+};
+
+const styles = StyleSheet.create({
+  container: {
+    justifyContent: 'center',
+    flex: 1,
+    margin: 10
+  },
+});
