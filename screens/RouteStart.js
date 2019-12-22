@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import {StyleSheet, View, Text, Button, Alert} from 'react-native';
+import {StyleSheet, View, Text, Button, Alert,ToastAndroid} from 'react-native';
 import Util from '../Util'
 
-const freq = 3000
+const freq = 10000
 export default class RouteStart extends Component {
   constructor(props) {
     super(props);
@@ -31,7 +31,7 @@ export default class RouteStart extends Component {
 
   handleStart = () => {
     if (this.state.isStarted) return;
-
+    ToastAndroid.show('Konumunuz alınıyor', ToastAndroid.SHORT);
     this.setState({ isStarted: true })
     this.setState(prevState => {
       let list = prevState.list
@@ -47,7 +47,7 @@ export default class RouteStart extends Component {
 
   handleStop = async () => {
     if (!this.state.isStarted) return;
-
+    ToastAndroid.show('Konumlarınız kaydedildi', ToastAndroid.SHORT);
     this.setState({ isStarted: false })
     clearInterval(this.intervalId)
     clearInterval(this.intervalSecondId)
@@ -92,11 +92,11 @@ export default class RouteStart extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text>Adet sayisi:{this.state.list.length}</Text>
-        <Text style={{textAlign:"right"}}>Süre:{this.state.seconds}</Text>
+        
+        <Text style={{textAlign:"right",margin:10}}>Süre : {this.state.seconds}</Text>
         <View style={{margin:10}}><Button title="Start"  color="#03AC13" onPress={this.handleStart} /></View>
         <View style={{margin:10}}><Button title="Stop" color="#FF0000" onPress={this.handleStop} /></View>
-        
+        <Text style={{margin:10}}>Konum sayisi : {this.state.list.length}</Text>
         {/*
           this.state.list.map((eleman, key) => {
 

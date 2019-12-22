@@ -21,14 +21,14 @@ const RouteStartStack = createStackNavigator(
 );
 
 RouteStartStack.navigationOptions = {
-  tabBarLabel: 'RouteStart',
+  tabBarLabel: 'Rota Başlat',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
       name={
         Platform.OS === 'ios'
           ? `ios-information-circle${focused ? '' : '-outline'}`
-          : 'md-information-circle'
+          : 'md-play'
       }
     />
   ),
@@ -44,9 +44,9 @@ const RouteShowStack = createStackNavigator(
 );
 
 RouteShowStack.navigationOptions = {
-  tabBarLabel: 'RouteShow',
+  tabBarLabel: 'Rota Göster',
   tabBarIcon: ({ focused }) => (
-    <TabBarIcon focused={focused} name={Platform.OS === 'ios' ? 'ios-link' : 'md-link'} />
+    <TabBarIcon focused={focused} name={Platform.OS === 'ios' ? 'ios-pin' : 'md-pin'} />
   ),
 };
 
@@ -60,9 +60,9 @@ const AboutStack = createStackNavigator(
 );
 
 AboutStack.navigationOptions = {
-  tabBarLabel: 'About',
+  tabBarLabel: 'Hakkında',
   tabBarIcon: ({ focused }) => (
-    <TabBarIcon focused={focused} name={Platform.OS === 'ios' ? 'ios-options' : 'md-options'} />
+    <TabBarIcon focused={focused} name={Platform.OS === 'ios' ? 'ios-options' : 'ios-information-circle-outline'} />
   ),
 };
 

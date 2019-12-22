@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { StyleSheet, View, Text, FlatList, TouchableOpacity } from 'react-native'
+import { StyleSheet, View, Text, FlatList, TouchableOpacity,ToastAndroid} from 'react-native'
 import Util from '../Util'
 import MapView, { Marker, MarkerAnimated } from 'react-native-maps'
 import { SafeAreaView } from 'react-navigation'
@@ -60,6 +60,7 @@ export default class RouteShow extends Component {
   }
 
   handlePress = (index) => {
+    ToastAndroid.show('Konumlar gösteriliyor', ToastAndroid.SHORT);
     let coords = this.state.coordList[index]
     this.setState({ markers: coords })
   }
@@ -84,7 +85,7 @@ export default class RouteShow extends Component {
           }
         </MapView>
 
-        <FlatList style={{ paddingTop: 5 }}
+        <FlatList style={{ paddingTop: 5,flex:2}}
           data={this.state.coordList}
           renderItem={(data) => {
             let arr = data.item
@@ -96,9 +97,8 @@ export default class RouteShow extends Component {
             let lastDate = new Date(lastDateString)
 
             return (
-              <TouchableOpacity onPress={() => this.handlePress(data.index)}>
-                <Text style={styles.text}>{Util.formatDate(firstDate)}-{Util.formatDate(lastDate)}
-                  <Text style={{}}> > </Text></Text>
+              <TouchableOpacity style={{ backgroundColor:'#f6f5f5',padding:5}}onPress={() => this.handlePress(data.index)}>
+                <Text style={styles.text}>{Util.formatDate(firstDate)}       ---       {Util.formatDate(lastDate)}</Text>
               </TouchableOpacity>
             );
           }
@@ -116,16 +116,17 @@ RouteShow.navigationOptions = {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 10
+    flex: 15
   },
   map: {
-    flex: 9,
+    flex: 3,
 
   },
   text: {
     fontSize: 24,
-    paddingLeft: 10,
-    backgroundColor: '#f5f5f5',
+    alignItems: "center",
+    textAlign:"center",
+    backgroundColor: '#ffffff',
     borderBottomWidth: 1,
     borderBottomColor: '#000000'
 
